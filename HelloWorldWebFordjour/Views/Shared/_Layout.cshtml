@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HelloWorldWebFordjour</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/HelloWorldWebFordjour.styles.css" asp-append-version="true" />
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: #f0f4f8;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            background-color: blue;
+        }
+        .nav-link {
+            transition: all 0.3s ease-in-out;
+        }
+        .nav-link:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+        .active-link {
+            font-weight: bold;
+            color: #d1e5ff !important; /* Lighter blue for active */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="bg-gradient-to-r from-blue-600 to-blue-800 p-4 shadow-lg">
+            <div class="container flex flex-col sm:flex-row justify-between items-center">
+                <a class="text-white text-3xl font-extrabold mb-4 sm:mb-0 tracking-wide" asp-area="" asp-controller="Home" asp-action="Index">My MVC App</a>
+                <div class="flex space-x-6">
+                    <a class="nav-link text-white text-lg py-2 px-3 rounded-md" asp-area="" asp-controller="Home" asp-action="Index">Home (Default)</a>
+                    <a class="nav-link text-white text-lg py-2 px-3 rounded-md" asp-area="" asp-controller="Assignments" asp-action="Organize">Organize Assignments (Custom Rule)</a>
+                    <!-- Link to Custom Attribute Routing page. Note the direct path for attribute route -->
+                    <a class="nav-link text-white text-lg py-2 px-3 rounded-md" asp-area="" asp-controller="CustomPage" asp-action="AttributeRoutingPage">Custom Attribute Page</a>
+                    <a class="nav-link bg-blue-700 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full shadow-md" asp-area="" asp-controller="Admin" asp-action="Index">Admin Area</a>
+                    <a class="nav-link bg-blue-700 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full shadow-md" asp-area=""  asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container flex-grow py-8">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="bg-gray-800 text-white p-4 text-center mt-auto">
+        <div class="container">
+            &copy; 2025 - Tyzaye Fordjour CIS174 - <a asp-area="" asp-controller="Home" asp-action="About" class="text-blue-400 hover:underline">About</a>
+        </div>
+    </footer>
+
+    <script>
+        // Client-side script to highlight active navigation link
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('nav a.nav-link').forEach(link => {
+                const linkPath = link.getAttribute('href');
+                if (linkPath && currentPath.includes(linkPath)) {
+                    link.classList.add('active-link');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
