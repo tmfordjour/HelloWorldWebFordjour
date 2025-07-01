@@ -1,0 +1,40 @@
+﻿@model HelloWorldWebFordjour.Models.StudentListViewModel 
+
+@{
+    ViewBag.Title = "Assignment 6.1"; // Sets the title for the page
+}
+
+<h2>Assignment 6.1 - Student Data Display</h2>
+
+@* Conditional display based on AccessLevel *@
+@if (Model.AccessLevel < 2)
+{
+    <p>You do not have a sufficient access level to view this data.</p>
+}
+else if (Model.AccessLevel >= 2 && Model.AccessLevel < 8)
+{
+    <h3>Student List (Limited View)</h3>
+    <ul>
+        @foreach (var student in Model.Students)
+        {
+            <li>
+                @* Render partial view for FirstName and LastName only *@
+                @Html.Partial("_StudentNamePartial", student)
+            </li>
+        }
+    </ul>
+}
+else if (Model.AccessLevel >= 8)
+{
+    <h3>Hello Admin</h3>
+    <h3>Student List (Full View)</h3>
+    <ul>
+        @foreach (var student in Model.Students)
+        {
+            <li>
+                @* Render partial view for FirstName, LastName, and Grade *@
+                @Html.Partial("_StudentFullPartial", student)
+            </li>
+        }
+    </ul>
+}

@@ -4,9 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - HelloWorldWebFordjour</title>
+
+    <!-- Existing local Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/HelloWorldWebFordjour.styles.css" asp-append-version="true" />
+
+    <!-- Tailwind CSS 
+    <!-- <link href="https://cdn.tailwindcss.com" rel="stylesheet"> -->
+    <!-- Bootstrap 3 CDN CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet" />
+
     <style>
         body {
             font-family: "Inter", sans-serif;
@@ -15,40 +21,75 @@
             display: flex;
             flex-direction: column;
         }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 1rem;
-            background-color: blue;
+            color: #000000
         }
+
         .nav-link {
             transition: all 0.3s ease-in-out;
         }
-        .nav-link:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-        }
+
+            .nav-link:hover {
+                transform: translateY(-2px);
+                opacity: 0.9;
+                color: #ff0000 !important; /* Red when hovering */
+            }
+
         .active-link {
             font-weight: bold;
             color: #d1e5ff !important; /* Lighter blue for active */
         }
+        /* Custom CSS to force the background of the collapsible navbar section to black */
+        .navbar-collapse {
+            background-color: #1a202c !important; /* Tailwind's gray-900 color */
+        }
+        /* Ensure dropdown menu items are visible on a dark background */
+        .dropdown-menu > li > a {
+            color: #333 !important; 
+        }
+
+            .dropdown-menu > li > a:hover,
+            .dropdown-menu > li > a:focus {
+                background-color: #f5f5f5 !important; /* Light hover background for dropdown items */
+                color: #333 !important;
+            }
     </style>
 </head>
 <body>
     <header>
-        <nav class="bg-gradient-to-r from-blue-600 to-blue-800 p-4 shadow-lg">
-            <div class="container flex flex-col sm:flex-row justify-between items-center">
-                <a class="text-white text-3xl font-extrabold mb-4 sm:mb-0 tracking-wide" asp-area="" asp-controller="Home" asp-action="Index">My MVC App</a>
-                <div class="flex space-x-6">
-                    <a class="nav-link text-white text-lg py-2 px-3 rounded-md" asp-area="" asp-controller="Home" asp-action="Index">Home (Default)</a>
-                    <a class="nav-link text-white text-lg py-2 px-3 rounded-md" asp-area="" asp-controller="Assignments" asp-action="Organize">Organize Assignments (Custom Rule)</a>
-                    <!-- Link to Custom Attribute Routing page. Note the direct path for attribute route -->
-                    <a class="nav-link text-white text-lg py-2 px-3 rounded-md" asp-area="" asp-controller="CustomPage" asp-action="AttributeRoutingPage">Custom Attribute Page</a>
-                    <a class="nav-link bg-blue-700 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full shadow-md" asp-area="" asp-controller="Admin" asp-action="Index">Admin Area</a>
-                    <a class="nav-link bg-blue-700 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full shadow-md" asp-area=""  asp-controller="Home" asp-action="Privacy">Privacy</a>
-
+        <!-- Combined Tailwind styling with Bootstrap 3 Navbar structure -->
+        <nav class="bg-gray-900 shadow-lg navbar">
+            <div class="container">
+                <div class="navbar-header">
+                    <!-- Application brand/logo -->
+                    <a class="navbar-brand text-black text-3xl font-extrabold tracking-wide" asp-area="" asp-controller="Home" asp-action="Index">My MVC App</a>
                 </div>
-            </div>
+
+                <!-- Collapsible content for navigation links -->
+                <div class="collapse navbar-collapse bg-gray-900" id="navbarCollapse">
+                    <ul class="nav navbar-nav">
+                        <!-- Existing navigation links, now correctly structured within <li> elements -->
+                        <li><a class="nav-link text-white text-lg py-2 px-3 rounded-md" asp-area="" asp-controller="Home" asp-action="Index">Home (Default)</a></li>
+                        <li><a class="nav-link text-white text-lg py-2 px-3 rounded-md" asp-area="" asp-controller="CustomPage" asp-action="AttributeRoutingPage">Custom Attribute Page</a></li>
+                        <li><a class="nav-link bg-blue-700 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full shadow-md" asp-area="" asp-controller="Admin" asp-action="Index">Admin Area</a></li>
+                        <li><a class="nav-link bg-blue-700 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full shadow-md" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+
+                        <!-- New Assignments Dropdown Menu -->
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Assignments (Custom Rule)</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/Assignment6_1/Index/1">Assignment 6.1</a></li>
+                                @* Will add future assignments here *@
+                            </ul>
+                        </li>
+                        <!-- End of Assignments Dropdown Menu -->
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container -->
         </nav>
     </header>
     <div class="container flex-grow py-8">
@@ -59,21 +100,28 @@
 
     <footer class="bg-gray-800 text-white p-4 text-center mt-auto">
         <div class="container">
-            &copy; 2025 - Tyzaye Fordjour CIS174 - <a asp-area="" asp-controller="Home" asp-action="About" class="text-blue-400 hover:underline">About</a>
+            &copy; 2025 - Tyzaye Fordjour CIS174<a asp-area="" asp-controller="Home" class="text-blue-400 hover:underline"></a>
         </div>
     </footer>
 
+    <!-- jQuery (REQUIRED for Bootstrap JavaScript) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- Bootstrap 3 JavaScript (REQUIRED for navbar collapse and dropdowns) -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <!-- Existing client-side script -->
     <script>
-        // Client-side script to highlight active navigation link
         document.addEventListener('DOMContentLoaded', function() {
             const currentPath = window.location.pathname;
             document.querySelectorAll('nav a.nav-link').forEach(link => {
                 const linkPath = link.getAttribute('href');
-                if (linkPath && currentPath.includes(linkPath)) {
+                // Check if the current path starts with the link path for more robust matching
+                if (linkPath && currentPath.startsWith(linkPath)) {
                     link.classList.add('active-link');
                 }
             });
         });
     </script>
+    @RenderSection("scripts", required: false)
 </body>
 </html>

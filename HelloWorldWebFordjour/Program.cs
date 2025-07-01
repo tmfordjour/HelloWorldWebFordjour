@@ -27,14 +27,15 @@ app.MapControllerRoute(
     name: "static",
     pattern: "{controller=Home}/{action}/Page/{num}"); 
 
+// Custom Routing Rule for "Assignments" dropdown
+app.MapControllerRoute(
+        name: "assignment6_1",
+        pattern: "Assignment6_1/Index/{accessLevel:int}", // Explicitly map accessLevel as an integer
+        defaults: new { controller = "Assignment6_1", action = "Index" }
+    );
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"); // Default route: Controller/Action/OptionalId
-
-// Custom Routing Rule for "Organize Assignments"
-app.MapControllerRoute(
-    name: "organizeAssignments",
-    pattern: "assignments/organize",
-    defaults: new { controller = "Assignments", action = "Organize" });
 
 app.Run();
