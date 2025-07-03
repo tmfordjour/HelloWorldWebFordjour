@@ -3,7 +3,7 @@ using HelloWorldWebFordjour.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
-namespace YourWebAppName.Controllers 
+namespace HelloWorldWebFordjour.Controllers
 {
     public class Assignment6_1Controller : Controller
     {

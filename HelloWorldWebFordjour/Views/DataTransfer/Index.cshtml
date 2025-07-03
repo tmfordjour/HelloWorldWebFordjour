@@ -1,0 +1,108 @@
+﻿@model List<HelloWorldWebFordjour.Models.Country>
+
+@{
+    ViewData["Title"] = "Olympic Games Countries"; // This is likely overridden by your _Layout.cshtml
+
+    // Get current filter values from the query string
+    string gameFilter = Context.Request.Query["gameFilter"];
+    string categoryFilter = Context.Request.Query["categoryFilter"];
+
+    // Build the dynamic title
+    string pageTitle = "Participating Countries";
+
+    if (!string.IsNullOrEmpty(gameFilter) && gameFilter != "ALL")
+    {
+        pageTitle += $" - {gameFilter}";
+    }
+
+    if (!string.IsNullOrEmpty(categoryFilter) && categoryFilter != "ALL")
+    {
+        // Decide if you want "Game - Category" or "Category - Game"
+        // Here, it appends after the game filter if present.
+        pageTitle += $" - {categoryFilter}";
+    }
+}
+
+<div class="container">
+    <div class="sidebar">
+        <h2>Filter Countries</h2>
+        <div class="filter-section">
+            <h3>By Game</h3>
+            <ul>
+                <li><a href="@Url.Action("Index", new { gameFilter = "ALL", categoryFilter = Context.Request.Query["categoryFilter"] })">All Games</a></li>
+                <li><a href="@Url.Action("Index", new { gameFilter = "Winter Olympics", categoryFilter = Context.Request.Query["categoryFilter"] })">Winter Olympics</a></li>
+                <li><a href="@Url.Action("Index", new { gameFilter = "Summer Olympics", categoryFilter = Context.Request.Query["categoryFilter"] })">Summer Olympics</a></li>
+                <li><a href="@Url.Action("Index", new { gameFilter = "Paralympics", categoryFilter = Context.Request.Query["categoryFilter"] })">Paralympics</a></li>
+                <li><a href="@Url.Action("Index", new { gameFilter = "Youth Olympic Games", categoryFilter = Context.Request.Query["categoryFilter"] })">Youth Olympic Games</a></li>
+            </ul>
+        </div>
+        <div class="filter-section">
+            <h3>By Category</h3>
+            <ul>
+                <li><a href="@Url.Action("Index", new { gameFilter = Context.Request.Query["gameFilter"], categoryFilter = "ALL" })">All Categories</a></li>
+                <li><a href="@Url.Action("Index", new { gameFilter = Context.Request.Query["gameFilter"], categoryFilter = "Indoor" })">Indoor</a></li>
+                <li><a href="@Url.Action("Index", new { gameFilter = Context.Request.Query["gameFilter"], categoryFilter = "Outdoor" })">Outdoor</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content">
+        <h1>@pageTitle</h1> 
+        <div id="country-list">
+            @foreach (var country in Model)
+            {
+                <div class="tooltip">
+                    <img src="~/flags/@country.FlagPath" alt="@country.Name" width="100" />
+                    <span class="tooltiptext">@country.Name, @country.Game, @country.Category</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="~/css/site.css" />
+   
+<style>
+
+        .tooltip {
+            position: relative; /* Keep this - it's crucial for tooltip text positioning */
+            opacity: 1; /* ADD THIS LINE to make the div and its contents visible */
+            /* Do NOT add display: inline-block; here if it caused issues before */
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 150px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position the tooltip above the flag */
+            left: 50%;
+            margin-left: -75px; /* Center the tooltip */
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%; /* At the bottom of the tooltip */
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+</style> 
+    
+}

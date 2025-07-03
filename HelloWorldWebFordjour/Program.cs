@@ -35,6 +35,14 @@ app.MapControllerRoute(
     );
 
 app.MapControllerRoute(
+    name: "dataTransfer",
+    pattern: "DataTransfer/{action}/{id?}",
+    defaults: new { controller = "DataTransfer", action = "Index" });
+//pattern: "Country/{gameFilter?}/{categoryFilter?}",
+//defaults: new { controller = "Country", action = "Index" }
+
+
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"); // Default route: Controller/Action/OptionalId
 

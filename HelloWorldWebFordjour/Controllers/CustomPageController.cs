@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace YourWebAppName.Controllers
+namespace HelloWorldWebFordjour.Controllers
 {
     public class CustomPageController : Controller
     {
