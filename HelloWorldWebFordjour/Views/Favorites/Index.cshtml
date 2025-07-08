@@ -1,0 +1,47 @@
+﻿@model List<HelloWorldWebFordjour.Models.Country>
+
+@{
+    ViewData["Title"] = "Your Favorite Countries";
+}
+
+<div class="container">
+    <h1>@ViewData["Title"]</h1>
+
+    @if (Model != null && Model.Any())
+    {
+        <div id="favorite-country-list" style="display: flex; flex-wrap: wrap; gap: 15px;">
+            @foreach (var country in Model)
+            {
+                <div class="favorite-item" style="border: 1px solid #ccc; padding: 10px; border-radius: 5px; text-align: center;">
+                    <img src="~/flags/@country.FlagPath" alt="@country.Name" width="50" />
+                    <p style="margin-top: 5px; font-weight: bold;">@country.Name</p>
+                    <p>@country.Game</p>
+                    <p>@country.Category</p>
+                </div>
+            }
+        </div>
+
+        <div style="margin-top: 20px;">
+            <form asp-controller="Favorites" asp-action="Clear" method="post">
+                <button type="submit" class="btn btn-danger">Clear Favorites</button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <p>You currently have no favorite countries.</p>
+    }
+
+    <div style="margin-top: 20px;">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Return to Home Page</a>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        .favorite-item {
+            /* Basic styling for favorite country display */
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        }
+    </style>
+}

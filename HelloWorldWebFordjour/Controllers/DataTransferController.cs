@@ -8,7 +8,7 @@ namespace HelloWorldWebFordjour.Controllers
     public class DataTransferController : Controller
     {
         // Sample data (in a real application, you'd get this from a database)
-        private List<Country> GetCountries()
+        public List<Country> GetCountries()
         {
             return new List<Country>
             {

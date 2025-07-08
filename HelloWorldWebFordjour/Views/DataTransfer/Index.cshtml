@@ -52,10 +52,19 @@
             @foreach (var country in Model)
             {
                 <div class="tooltip">
-                    <img src="~/flags/@country.FlagPath" alt="@country.Name" width="100" />
+                    <img src="~/flags/@country.FlagPath" alt="@country.Name" width="50" />
                     <span class="tooltiptext">@country.Name, @country.Game, @country.Category</span>
+
+                    <form asp-controller="Favorites" asp-action="Add" method="post" style="margin-top: 5px;">
+                        <input type="hidden" name="countryName" value="@country.Name" />
+                        <button type="submit" class="btn btn-sm btn-success">Add to Favorites</button>
+                    </form>
                 </div>
             }
+        </div>
+
+        <div style="margin-top: 20px;">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Return to Home Page</a>
         </div>
     </div>
 </div>

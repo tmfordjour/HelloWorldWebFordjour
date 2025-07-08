@@ -7,6 +7,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews(); // Adds MVC services
 
+// --- Add Session services ---
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set a timeout for the session
+    options.Cookie.HttpOnly = true; // Make the session cookie inaccessible to client-side script
+    options.Cookie.IsEssential = true; // Make the session cookie essential for the app
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -18,6 +26,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles(); // Enables serving static files from wwwroot
+
+app.UseSession(); // Enables session capabilities
 
 app.UseRouting(); // Enables routing capabilities
 
@@ -40,7 +50,6 @@ app.MapControllerRoute(
     defaults: new { controller = "DataTransfer", action = "Index" });
 //pattern: "Country/{gameFilter?}/{categoryFilter?}",
 //defaults: new { controller = "Country", action = "Index" }
-
 
 app.MapControllerRoute(
     name: "default",
