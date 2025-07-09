@@ -3,23 +3,19 @@
 @{
     ViewData["Title"] = "Olympic Games Countries"; // This is likely overridden by your _Layout.cshtml
 
-    // Get current filter values from the query string
-    string gameFilter = Context.Request.Query["gameFilter"];
-    string categoryFilter = Context.Request.Query["categoryFilter"];
+    // Access filters from ViewBag (or if you change model to DataTransferViewModel)
+    HelloWorldWebFordjour.Models.CountryFilterViewModel currentFilters = ViewBag.CurrentFilters as HelloWorldWebFordjour.Models.CountryFilterViewModel ?? new HelloWorldWebFordjour.Models.CountryFilterViewModel();
 
-    // Build the dynamic title
     string pageTitle = "Participating Countries";
 
-    if (!string.IsNullOrEmpty(gameFilter) && gameFilter != "ALL")
+    if (!string.IsNullOrEmpty(currentFilters.GameFilter) && currentFilters.GameFilter != "ALL")
     {
-        pageTitle += $" - {gameFilter}";
+        pageTitle += $" - {currentFilters.GameFilter}";
     }
 
-    if (!string.IsNullOrEmpty(categoryFilter) && categoryFilter != "ALL")
+    if (!string.IsNullOrEmpty(currentFilters.CategoryFilter) && currentFilters.CategoryFilter != "ALL")
     {
-        // Decide if you want "Game - Category" or "Category - Game"
-        // Here, it appends after the game filter if present.
-        pageTitle += $" - {categoryFilter}";
+        pageTitle += $" - {currentFilters.CategoryFilter}";
     }
 }
 
@@ -29,19 +25,19 @@
         <div class="filter-section">
             <h3>By Game</h3>
             <ul>
-                <li><a href="@Url.Action("Index", new { gameFilter = "ALL", categoryFilter = Context.Request.Query["categoryFilter"] })">All Games</a></li>
-                <li><a href="@Url.Action("Index", new { gameFilter = "Winter Olympics", categoryFilter = Context.Request.Query["categoryFilter"] })">Winter Olympics</a></li>
-                <li><a href="@Url.Action("Index", new { gameFilter = "Summer Olympics", categoryFilter = Context.Request.Query["categoryFilter"] })">Summer Olympics</a></li>
-                <li><a href="@Url.Action("Index", new { gameFilter = "Paralympics", categoryFilter = Context.Request.Query["categoryFilter"] })">Paralympics</a></li>
-                <li><a href="@Url.Action("Index", new { gameFilter = "Youth Olympic Games", categoryFilter = Context.Request.Query["categoryFilter"] })">Youth Olympic Games</a></li>
+                <li><a href="@Url.Action("Index", new { gameFilter = "ALL", categoryFilter = currentFilters.CategoryFilter })">All Games</a></li>
+                <li><a href="@Url.Action("Index", new { gameFilter = "Winter Olympics", categoryFilter = currentFilters.CategoryFilter })">Winter Olympics</a></li>
+                <li><a href="@Url.Action("Index", new { gameFilter = "Summer Olympics", categoryFilter = currentFilters.CategoryFilter })">Summer Olympics</a></li>
+                <li><a href="@Url.Action("Index", new { gameFilter = "Paralympics", categoryFilter = currentFilters.CategoryFilter })">Paralympics</a></li>
+                <li><a href="@Url.Action("Index", new { gameFilter = "Youth Olympic Games", categoryFilter = currentFilters.CategoryFilter })">Youth Olympic Games</a></li>
             </ul>
         </div>
         <div class="filter-section">
             <h3>By Category</h3>
             <ul>
-                <li><a href="@Url.Action("Index", new { gameFilter = Context.Request.Query["gameFilter"], categoryFilter = "ALL" })">All Categories</a></li>
-                <li><a href="@Url.Action("Index", new { gameFilter = Context.Request.Query["gameFilter"], categoryFilter = "Indoor" })">Indoor</a></li>
-                <li><a href="@Url.Action("Index", new { gameFilter = Context.Request.Query["gameFilter"], categoryFilter = "Outdoor" })">Outdoor</a></li>
+                <li><a href="@Url.Action("Index", new { gameFilter = currentFilters.GameFilter, categoryFilter = "ALL" })">All Categories</a></li>
+                <li><a href="@Url.Action("Index", new { gameFilter = currentFilters.GameFilter, categoryFilter = "Indoor" })">Indoor</a></li>
+                <li><a href="@Url.Action("Index", new { gameFilter = currentFilters.GameFilter, categoryFilter = "Outdoor" })">Outdoor</a></li>
             </ul>
         </div>
     </div>

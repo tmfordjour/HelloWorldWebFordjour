@@ -1,4 +1,5 @@
 ﻿using HelloWorldWebFordjour.Models;
+using HelloWorldWebFordjour.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,26 +40,30 @@ namespace HelloWorldWebFordjour.Controllers
             };
         }
 
-        public IActionResult Index(string gameFilter, string categoryFilter)
+        // Modified Index action to accept CountryFilterViewModel
+        public IActionResult Index(CountryFilterViewModel model) // <--- Changed parameter type
         {
             var countries = GetCountries();
 
-            // Apply filtering based on user selection
-            if (!string.IsNullOrEmpty(gameFilter) && gameFilter != "ALL")
+            // Apply filtering based on ViewModel properties
+            if (!string.IsNullOrEmpty(model.GameFilter) && model.GameFilter != "ALL")
             {
-                countries = countries.Where(c => c.Game == gameFilter).ToList();
+                countries = countries.Where(c => c.Game == model.GameFilter).ToList();
             }
 
-            if (!string.IsNullOrEmpty(categoryFilter) && categoryFilter != "ALL")
+            if (!string.IsNullOrEmpty(model.CategoryFilter) && model.CategoryFilter != "ALL")
             {
-                countries = countries.Where(c => c.Category == categoryFilter).ToList();
+                countries = countries.Where(c => c.Category == model.CategoryFilter).ToList();
             }
 
             // Sort countries alphabetically
             countries = countries.OrderBy(c => c.Name).ToList();
 
+            // You might want to pass the model back to the view to maintain filter state
+            ViewBag.CurrentFilters = model; // Store filters in ViewBag for now, or pass model directly
+
             // Pass the filtered and sorted countries to the view
-            return View(countries);
+            return View(countries); // Or return View(new DataTransferViewModel { Filters = model, Countries = countries }); if you create a larger viewmodel
         }
     }
 }
