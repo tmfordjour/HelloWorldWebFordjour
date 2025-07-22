@@ -1,6 +1,10 @@
+using HelloWorldWebFordjour.Data; 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore; 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using HelloWorldWebFordjour.Interfaces; 
+using HelloWorldWebFordjour.Repositories; 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +18,13 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true; // Make the session cookie inaccessible to client-side script
     options.Cookie.IsEssential = true; // Make the session cookie essential for the app
 });
+
+// Register the DbContext with the dependency injection container
+builder.Services.AddDbContext<TicketsDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("TicketsDbContext")));
+
+// Register the Ticket Repository
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 
 var app = builder.Build();
 

@@ -25,6 +25,8 @@ namespace HelloWorldWebFordjour.Controllers
         // Action to add a country to favorites
         // This will be called when the "Add to Favorites" button is clicked
         [HttpPost] // Mark as HttpPost because it changes state
+        [ValidateAntiForgeryToken]
+
         public IActionResult Add(string countryName)
         {
             // You'll need to fetch the full Country object based on its name
@@ -58,6 +60,8 @@ namespace HelloWorldWebFordjour.Controllers
 
         // Action to clear all favorite countries
         [HttpPost] // Mark as HttpPost because it changes state
+        [ValidateAntiForgeryToken]
+
         public IActionResult Clear()
         {
             HttpContext.Session.Remove(FavoritesSessionKey);

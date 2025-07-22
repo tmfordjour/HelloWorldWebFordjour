@@ -1,0 +1,72 @@
+﻿@model HelloWorldWebFordjour.ViewComponents.TicketStatusButtonViewComponent.TicketStatusDisplayModel
+
+<span class="@Model.ButtonClass status-display-button" role="button" aria-disabled="true">
+    @Model.DisplayText
+</span>
+
+<style>
+    .status-display-button {
+        min-width: 120px; /* Adjust as needed */
+        text-align: center;
+        margin: 2px;
+        padding: 5px 8px;
+        border-radius: 5px;
+        font-size: 0.85em;
+        /* Crucial: Disable all transitions to prevent hover animation */
+        transition: none !important;
+        /* Ensure cursor remains default (arrow), not pointer */
+        cursor: default !important;
+        /* Prevent text selection when double-clicked/dragged */
+        user-select: none !important;
+        /* Ensure no tap highlight on mobile */
+        -webkit-tap-highlight-color: transparent;
+    }
+
+        /* Override Bootstrap's default :hover, :focus, :active styles */
+        /* Use !important to ensure these override any framework defaults */
+        .status-display-button:hover,
+        .status-display-button:focus,
+        .status-display-button:active {
+            /* Reset background, border, and text color to their non-hover state */
+            /* These properties are placeholders and will be overridden by the more specific rules below */
+            background-color: initial !important;
+            border-color: initial !important;
+            color: white !important;
+            text-decoration: none !important;
+            box-shadow: none !important;
+            transform: none !important;
+            filter: none !important;
+            outline: none !important; /* Remove outline on focus */
+            background-image: none !important; /* Remove gradient or other background changes */
+        }
+
+        /* More specific overrides for each button type to maintain their base color on hover/focus/active */
+        /* These use Bootstrap's CSS variables (--bs-color) for accurate color matching. */
+        .status-display-button.btn-secondary:hover, .status-display-button.btn-secondary:focus, .status-display-button.btn-secondary:active {
+            background-color: var(--bs-secondary) !important;
+            border-color: var(--bs-secondary) !important;
+        }
+
+        .status-display-button.btn-primary:hover, .status-display-button.btn-primary:focus, .status-display-button.btn-primary:active {
+            background-color: var(--bs-primary) !important;
+            border-color: var(--bs-primary) !important;
+        }
+
+        .status-display-button.btn-info:hover, .status-display-button.btn-info:focus, .status-display-button.btn-info:active {
+            background-color: var(--bs-info) !important;
+            border-color: var(--bs-info) !important;
+        }
+
+        .status-display-button.btn-success:hover, .status-display-button.btn-success:focus, .status-display-button.btn-success:active {
+            background-color: var(--bs-success) !important;
+            border-color: var(--bs-success) !important;
+        }
+
+        /* Ensure text color remains white on hover/focus/active for all types */
+        .status-display-button.btn-secondary:hover, .status-display-button.btn-secondary:focus, .status-display-button.btn-secondary:active,
+        .status-display-button.btn-primary:hover, .status-display-button.btn-primary:focus, .status-display-button.btn-primary:active,
+        .status-display-button.btn-info:hover, .status-display-button.btn-info:focus, .status-display-button.btn-info:active,
+        .status-display-button.btn-success:hover, .status-display-button.btn-success:focus, .status-display-button.btn-success:active {
+            color: white !important;
+        }
+</style>

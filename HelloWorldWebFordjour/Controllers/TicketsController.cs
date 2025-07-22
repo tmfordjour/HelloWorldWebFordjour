@@ -1,97 +1,112 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using HelloWorldWebFordjour.Models; 
+using HelloWorldWebFordjour.Models;
 using System.Collections.Generic;
-using System.Linq; 
+using System.Linq;
+using HelloWorldWebFordjour.Data;
+using HelloWorldWebFordjour.Interfaces;
+using Microsoft.EntityFrameworkCore; 
 
 namespace HelloWorldWebFordjour.Controllers
 {
     public class TicketsController : Controller
     {
-        // Static list 
-        // This data will reset when the application restarts.
-        private static List<Ticket> _tickets = new List<Ticket>
-        {
-            // Seed some initial data
-            new Ticket { Id = 1, Name = "Implement Favorites Feature", Description = "Add ability to save and view favorite countries.", SprintNumber = 1, PointValue = 8, Status = TicketStatus.Done },
-            new Ticket { Id = 2, Name = "Create ToDo List Module", Description = "Develop ticket creation, viewing, and editing.", SprintNumber = 2, PointValue = 10, Status = TicketStatus.InProgress },
-            new Ticket { Id = 3, Name = "Design Landing Page", Description = "Create a welcoming home page for the Olympics site.", SprintNumber = 2, PointValue = 5, Status = TicketStatus.ToDo },
-            new Ticket { Id = 4, Name = "Fix Footer Alignment", Description = "Adjust CSS for consistent footer positioning.", SprintNumber = 1, PointValue = 2, Status = TicketStatus.QA }
-        };
+        private readonly ITicketRepository _ticketRepository; // Declare a private field for the DbticketRepository
 
-        // Used to generate unique IDs for new tickets
-        private static int _nextId = _tickets.Any() ? _tickets.Max(t => t.Id) + 1 : 1;
+        // Constructor to inject the ITicketRepository        
+        public TicketsController(ITicketRepository ticketRepository) 
+        {
+            _ticketRepository = ticketRepository;
+        }
 
         // GET: Tickets (List all tickets)
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            // Order tickets by Sprint Number and then by Status (ToDo first)
-            var sortedTickets = _tickets.OrderBy(t => t.SprintNumber)
-                                        .ThenBy(t => (int)t.Status) // Order by enum value (ToDo=0, InProgress=1, etc.)
-                                        .ToList();
-            return View(sortedTickets);
+            var tickets = await _ticketRepository.GetAllTicketsAsync(); // These tickets are already sorted at the database level
+            return View(tickets);
         }
 
         // GET: Tickets/Create (Display the form to create a new ticket)
         public IActionResult Create()
         {
-            return View(); // Return an empty view for the form
+            return View();
         }
 
         // POST: Tickets/Create (Handle form submission for new ticket)
         [HttpPost]
-        [ValidateAntiForgeryToken] // Recommended for POST actions to prevent CSRF attacks
-        public IActionResult Create(Ticket ticket)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Name,Description,SprintNumber,PointValue,Status")] Ticket ticket)
         {
-            if (ModelState.IsValid) // Check if model validation passes
+            if (ModelState.IsValid)
             {
-                ticket.Id = _nextId++; // Assign a unique ID
-                _tickets.Add(ticket);
-                TempData["Message"] = "Ticket added successfully!"; // Optional: show success message
-                return RedirectToAction(nameof(Index)); // Redirect to the list view
+                await _ticketRepository.AddTicketAsync(ticket);
+                TempData["Message"] = "Ticket added successfully!";
+                return RedirectToAction(nameof(Index));
             }
-            // If validation fails, return the view with validation errors
             return View(ticket);
         }
 
         // GET: Tickets/Edit/{id} (Display the form to edit an existing ticket)
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int? id) // Make ID nullable
         {
-            var ticket = _tickets.FirstOrDefault(t => t.Id == id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            // Use the repository method to get the ticket
+            var ticket = await _ticketRepository.GetTicketByIdAsync(id.Value); // .Value since id is nullable
             if (ticket == null)
             {
-                return NotFound(); // Return 404 if ticket not found
+                return NotFound();
             }
             return View(ticket);
         }
-
+        
         // POST: Tickets/Edit (Handle form submission for updating a ticket)
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Ticket ticket)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,SprintNumber,PointValue,Status")] Ticket ticket)
         {
+            if (id != ticket.Id)
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
-                var existingTicket = _tickets.FirstOrDefault(t => t.Id == ticket.Id);
-                if (existingTicket != null)
+                try
                 {
-                    // Update properties of the existing ticket
-                    existingTicket.Name = ticket.Name;
-                    existingTicket.Description = ticket.Description;
-                    existingTicket.SprintNumber = ticket.SprintNumber;
-                    existingTicket.PointValue = ticket.PointValue;
-                    existingTicket.Status = ticket.Status;
+                    // Use the repository method to update the ticket
+                    await _ticketRepository.UpdateTicketAsync(ticket);
                     TempData["Message"] = "Ticket updated successfully!";
-                    return RedirectToAction(nameof(Index));
                 }
-                return NotFound(); // Should not happen if Id is correct
+                catch (DbUpdateConcurrencyException) // This exception originates from EF Core in the repository
+                {
+                    // Use the repository method to check existence
+                    if (!await _ticketRepository.TicketExistsAsync(ticket.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw; // Re-throw if it's another concurrency issue
+                    }
+                }
+                return RedirectToAction(nameof(Index));
             }
-            return View(ticket); // Return view with errors if validation fails
+            return View(ticket);
         }
-
-        // GET: Tickets/Delete/{id} (Display confirmation for deleting a ticket) - Optional but good practice
-        public IActionResult Delete(int id)
+        
+        // GET: Tickets/Delete/{id} (Display confirmation for deleting a ticket)
+        public async Task<IActionResult> Delete(int? id) // Make ID nullable
         {
-            var ticket = _tickets.FirstOrDefault(t => t.Id == id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            // Use the repository method to get the ticket
+            var ticket = await _ticketRepository.GetTicketByIdAsync(id.Value);
             if (ticket == null)
             {
                 return NotFound();
@@ -100,16 +115,13 @@ namespace HelloWorldWebFordjour.Controllers
         }
 
         // POST: Tickets/Delete (Handle deletion of a ticket)
-        [HttpPost, ActionName("Delete")] // Map to POST /Tickets/Delete, but use "DeleteConfirmed" internally
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ticketToRemove = _tickets.FirstOrDefault(t => t.Id == id);
-            if (ticketToRemove != null)
-            {
-                _tickets.Remove(ticketToRemove);
-                TempData["Message"] = "Ticket deleted successfully!";
-            }
+            // Use the repository method to delete the ticket
+            await _ticketRepository.DeleteTicketAsync(id); // Repository handles finding and removing
+            TempData["Message"] = "Ticket deleted successfully!";
             return RedirectToAction(nameof(Index));
         }
     }

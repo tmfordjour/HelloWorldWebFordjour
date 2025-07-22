@@ -21,11 +21,11 @@ namespace HelloWorldWebFordjour.Models
 
         [Required(ErrorMessage = "Ticket Name is required.")]
         [StringLength(100, ErrorMessage = "Ticket Name cannot exceed 100 characters.")]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [Display(Name = "Description")]
         [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Required(ErrorMessage = "Sprint Number is required.")]
         [Display(Name = "Sprint #")]

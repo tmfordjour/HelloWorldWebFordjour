@@ -1,52 +1,69 @@
-﻿@model List<HelloWorldWebFordjour.Models.Ticket>
+﻿@model IEnumerable<HelloWorldWebFordjour.Models.Ticket>
 
 @{
-    ViewData["Title"] = "Ticket List";
+    ViewData["Title"] = "Tickets";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1>Tickets</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Create New Ticket</a>
+    <a asp-action="Create" class="btn btn-primary my-action-button">Create New</a>
 </p>
 
 @if (TempData["Message"] != null)
 {
-    <div class="alert alert-success">@TempData["Message"]</div>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 }
 
-@if (Model != null && Model.Any())
-{
-    <table class="table table-bordered table-striped">
-        <thead>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SprintNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PointValue)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
             <tr>
-                <th>@Html.DisplayNameFor(model => model.First().Name)</th>
-                <th>@Html.DisplayNameFor(model => model.First().Description)</th>
-                <th>@Html.DisplayNameFor(model => model.First().SprintNumber)</th>
-                <th>@Html.DisplayNameFor(model => model.First().PointValue)</th>
-                <th>@Html.DisplayNameFor(model => model.First().Status)</th>
-                <th>Actions</th>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SprintNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PointValue)
+                </td>
+                <td>
+                    @* This remains the non-interactive status display button *@
+                    @await Component.InvokeAsync("TicketStatusButton", new { currentStatus = item.Status })
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary my-action-button">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger my-action-button">Delete</a>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
-                    <td>@Html.DisplayFor(modelItem => item.SprintNumber)</td>
-                    <td>@Html.DisplayFor(modelItem => item.PointValue)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Status)</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>No tickets found. Click "Create New Ticket" to add one.</p>
-}
+        }
+    </tbody>
+</table>
